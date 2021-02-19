@@ -20,5 +20,13 @@ class Pet < ApplicationRecord
     record.approved == true
   end
 
+  def adopt
+    update(adoptable: false)
+  end
 
+  def approved_application?
+    pet_applications.any? do |record|
+      record.approved == true
+    end
+  end
 end

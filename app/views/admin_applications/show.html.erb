@@ -3,7 +3,12 @@
 <section class="application_pets"> <% @application.pets.each do |pet| %>
   <div id="pet-<%= pet.id %>"><h3><%= link_to "#{pet.name}", "/pets/#{pet.id}" %>
     <% if pet.not_reviewed?(@application.id) %>
-      <%= button_to "Approve", "/admin/applications/#{@application.id}/update_pet?pet_id=#{pet.id};application_id=#{@application.id};approved=true", method: :patch %>
+      <% if pet.approved_application? %>
+        <%= "This pet has already been approved for adoption" %>
+      <% else %>
+        <%= button_to "Approve", "/admin/applications/#{@application.id}/update_pet?pet_id=#{pet.id};application_id=#{@application.id};approved=true", method: :patch %>
+      <%end%>
+
       <%= button_to "Reject", "/admin/applications/#{@application.id}/update_pet?pet_id=#{pet.id};application_id=#{@application.id};approved=false", method: :patch %>
     <% elsif pet.approved?(@application.id) %>
       <%= "Approved" %>
@@ -11,3 +16,6 @@
       <%= "Rejected" %>
     <%end%></h3></div>
   <%end%></section>
+
+
+SELECT shelters.* FROM shelters WHERE

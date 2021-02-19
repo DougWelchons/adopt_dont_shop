@@ -23,6 +23,9 @@ class Application < ApplicationRecord
     @records = PetApplication.where(application_id: id)
     if @records.all? {|record| record.approved}
       update(status: "Approved")
+      pets.each do |pet|
+        pet.adopt
+      end
     elsif @records.any? {|record| record.approved == nil}
     else
       update(status: "Rejected")

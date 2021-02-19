@@ -18,19 +18,26 @@ RSpec.describe Application, type: :model do
 
   before :each do
     @app1 = Application.create!(name: "name1", street: "123 abc st.", city: "city", state: "state", zip: "92018", description: "Some words", status: "In Progress")
-    @app2 = Application.create!(name: "name1", street: "123 abc st.", city: "city", state: "state", zip: "92018", description: "Some words", status: "Pending")
+    @app2 = Application.create!(name: "name2", street: "123 abc st.", city: "city", state: "state", zip: "92018", description: "Some words", status: "Pending")
+    @app3 = Application.create!(name: "name3", street: "123 abc st.", city: "city", state: "state", zip: "92018", description: "Some words", status: "Pending")
+    @app4 = Application.create!(name: "name4", street: "123 abc st.", city: "city", state: "state", zip: "92018", description: "Some words", status: "Pending")
 
     @shelter = Shelter.create!(name: "Good Home")
 
     @pet1 = @shelter.pets.create!(name: "Buddy", approximate_age: 3, description: "A good boy", sex: "male")
     @pet2 = @shelter.pets.create!(name: "Duke", approximate_age: 3, description: "A good boy", sex: "male")
 
-    @app1_pet1 = PetApplication.create!(pet: @pet1, application: @app1)
+    @app1_pet1 = PetApplication.create!(pet: @pet1, application: @app1, approved: true)
+    @app1_pet2 = PetApplication.create!(pet: @pet2, application: @app2, approved: true)
+    @app2_pet1 = PetApplication.create!(pet: @pet1, application: @app2, approved: false)
+    @app2_pet2 = PetApplication.create!(pet: @pet2, application: @app2, approved: true)
+    @app3_pet2 = PetApplication.create!(pet: @pet1, application: @app3, approved: true)
+    @app3_pet2 = PetApplication.create!(pet: @pet2, application: @app3, approved: nil)
   end
 
   it "#has_pets?" do
     expect(@app1.has_pets?).to eq(true)
-    expect(@app2.has_pets?).to eq(false)
+    expect(@app4.has_pets?).to eq(false)
   end
 
   it "#in_progress?" do
@@ -46,5 +53,15 @@ RSpec.describe Application, type: :model do
   it "#submitted?" do
     expect(@app1.submitted?).to eq(false)
     expect(@app2.submitted?).to eq(true)
+  end
+
+  it "#approved?" do
+    @app1.approved?
+    @app2.approved?
+    @app3.approved?
+
+    expect(@app1.status).to eq("Approved")
+    expect(@app2.status).to eq("Rejected")
+    expect(@app3.status).to eq("Pending")
   end
 end

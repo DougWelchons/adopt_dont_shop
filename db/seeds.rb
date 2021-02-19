@@ -9,6 +9,9 @@ Application.destroy_all
 @app4 = Application.create!(name: "Patty Collens", street: "456 abc st.", city: "city", state: "state", zip: "92018", description: "Some words", status: "Pending")
 
 @shelter = Shelter.create!(name: "Good Home")
+@shelter2 = Shelter.create!(name: "Good Home2")
+@shelter3 = Shelter.create!(name: "Good Home3")
+@shelter4 = Shelter.create!(name: "Good Home4")
 
 @pet1 = @shelter.pets.create!(name: "Buddy", approximate_age: 3, description: "A good Dog", sex: "male")
 @pet2 = @shelter.pets.create!(name: "Duke", approximate_age: 1, description: "A good boy", sex: "male")

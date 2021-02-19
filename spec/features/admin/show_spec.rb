@@ -131,6 +131,25 @@ RSpec.describe "Admin application show page" do
 
           expect(page).to have_content("Status: Approved")
         end
+
+        it "makes all pets on the application not adoptable" do
+          expect(@pet1.adoptable).to eq(true)
+
+          visit "/admin/applications/#{@app1.id}"
+
+          within(".application_pets") do
+            within("#pet-#{@pet1.id}") do
+              click_button("Approve")
+            end
+
+            within("#pet-#{@pet2.id}") do
+              click_button("Approve")
+            end
+          end
+          visit "/pets/#{@pet1.id}"
+
+          expect(page).to have_content("false")
+        end
       end
 
       describe "When one or more pets are rejected and all others are approved" do
@@ -152,6 +171,45 @@ RSpec.describe "Admin application show page" do
           end
 
           expect(page).to have_content("Status: Rejected")
+        end
+      end
+
+      describe "when a pet is approved on another application" do
+        it " shows a message that the pet is approved on another application" do
+          visit "/admin/applications/#{@app1.id}"
+
+          within(".application_pets") do
+            within("#pet-#{@pet2.id}") do
+              click_button("Approve")
+            end
+          end
+
+          visit "/admin/applications/#{@app2.id}"
+
+          within(".application_pets") do
+            within("#pet-#{@pet2.id}") do
+              expect(page).to have_content("This pet has already been approved for adoption")
+            end
+          end
+        end
+
+        it "doesn't show an approve button, but still shows a reject button" do
+          visit "/admin/applications/#{@app1.id}"
+
+          within(".application_pets") do
+            within("#pet-#{@pet2.id}") do
+              click_button("Approve")
+            end
+          end
+
+          visit "/admin/applications/#{@app2.id}"
+
+          within(".application_pets") do
+            within("#pet-#{@pet2.id}") do
+              expect(page).to have_button("Reject")
+              expect(page).to_not have_button("Approve")
+            end
+          end
         end
       end
     end

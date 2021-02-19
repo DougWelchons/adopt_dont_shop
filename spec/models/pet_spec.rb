@@ -45,6 +45,7 @@ describe Pet, type: :model do
   describe "instance methods" do
     before :each do
       @app1 = Application.create!(name: "name1", street: "123 abc st.", city: "city", state: "state", zip: "92018", description: "Some words", status: "pending")
+      @app2 = Application.create!(name: "name1", street: "123 abc st.", city: "city", state: "state", zip: "92018", description: "Some words", status: "pending")
 
       @shelter = Shelter.create!(name: "Good Home")
 
@@ -55,6 +56,7 @@ describe Pet, type: :model do
       @app1_pet1 = PetApplication.create!(pet: @pet1, application: @app1)
       @app1_pet2 = PetApplication.create!(pet: @pet2, application: @app1, approved: true)
       @app1_pet3 = PetApplication.create!(pet: @pet3, application: @app1, approved: false)
+      @app2_pet2 = PetApplication.create!(pet: @pet2, application: @app2)
     end
 
     it "#not_reviewed?" do
@@ -67,6 +69,18 @@ describe Pet, type: :model do
       expect(@pet1.approved?(@app1.id)).to eq(false)
       expect(@pet2.approved?(@app1.id)).to eq(true)
       expect(@pet3.approved?(@app1.id)).to eq(false)
+    end
+
+    it "#adopt" do
+      expect(@pet1.adoptable).to eq(true)
+
+      @pet1.adopt
+
+      expect(@pet1.adoptable).to eq(false)
+    end
+
+    it "#approved_applications?" do
+      expect(@pet2.approved_application?).to eq(true)
     end
   end
 end
